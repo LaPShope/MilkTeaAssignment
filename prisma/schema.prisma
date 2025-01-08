@@ -1,0 +1,79 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+generator dbml {
+  provider = "prisma-dbml-generator"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Store {
+  id      Int    @id @default(autoincrement()) // key: id
+  name    String
+  address String
+  phone   String
+
+  products    Product[]
+  socials     SocialMedia[]
+  bestSellers BestSeller[]
+}
+
+model SocialMedia {
+  url     String          @id
+  type    SocialMediaType
+  storeId Int
+
+  store Store @relation(fields: [storeId], references: [id])
+}
+
+model BestSeller {
+  id        Int @id @default(autoincrement()) // key: id
+  productId Int
+  storeId   Int
+
+  product Product @relation(fields: [productId], references: [id])
+  store   Store   @relation(fields: [storeId], references: [id])
+}
+
+model Product {
+  id     Int     @id @default(autoincrement())
+  name   String
+  size   Size
+  type   Type
+  shopId Int
+  price  Decimal
+
+  store      Store        @relation(fields: [shopId], references: [id])
+  bestSeller BestSeller[]
+}
+
+enum Type {
+  TOPPING
+  TRADITIONAL
+  MACHIATO
+  ROSE
+  SPECIAL
+}
+
+enum Size {
+  M
+  L
+}
+
+enum SocialMediaType {
+  FACEBOOK
+  INSTAGRAM
+  TIKTOK
+  TWITTER
+  YOUTUBE
+}

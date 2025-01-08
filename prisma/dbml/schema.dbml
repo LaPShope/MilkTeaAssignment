@@ -1,0 +1,68 @@
+//// ------------------------------------------------------
+//// THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+//// ------------------------------------------------------
+
+Table Store {
+  id Int [pk, increment]
+  name String [not null]
+  address String [not null]
+  phone String [not null]
+  products Product [not null]
+  socials SocialMedia [not null]
+  bestSellers BestSeller [not null]
+}
+
+Table SocialMedia {
+  url String [pk]
+  type SocialMediaType [not null]
+  storeId Int [not null]
+  store Store [not null]
+}
+
+Table BestSeller {
+  id Int [pk, increment]
+  productId Int [not null]
+  storeId Int [not null]
+  product Product [not null]
+  store Store [not null]
+}
+
+Table Product {
+  id Int [pk, increment]
+  name String [not null]
+  size Size [not null]
+  type Type [not null]
+  shopId Int [not null]
+  price Decimal [not null]
+  store Store [not null]
+  bestSeller BestSeller [not null]
+}
+
+Enum Type {
+  TOPPING
+  TRADITIONAL
+  MACHIATO
+  ROSE
+  SPECIAL
+}
+
+Enum Size {
+  M
+  L
+}
+
+Enum SocialMediaType {
+  FACEBOOK
+  INSTAGRAM
+  TIKTOK
+  TWITTER
+  YOUTUBE
+}
+
+Ref: SocialMedia.storeId > Store.id
+
+Ref: BestSeller.productId > Product.id
+
+Ref: BestSeller.storeId > Store.id
+
+Ref: Product.shopId > Store.id
