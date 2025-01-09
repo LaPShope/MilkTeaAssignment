@@ -23,17 +23,21 @@ model Store {
   address String
   phone   String
 
-  products    Product[]
-  socials     SocialMedia[]
-  bestSellers BestSeller[]
+  Drinks      Drink[]
+  Infors      Info[]
+  BestSellers BestSeller[]
+  Toppings    Topping[]
 }
 
-model SocialMedia {
-  url     String          @id
-  type    SocialMediaType
+model Drink {
+  id      Int    @id @default(autoincrement())
+  name    String
+  type    Type
   storeId Int
 
-  store Store @relation(fields: [storeId], references: [id])
+  Store       Store        @relation(fields: [storeId], references: [id])
+  BestSellers BestSeller[]
+  Pricings    Pricing[]
 }
 
 model BestSeller {
@@ -41,24 +45,41 @@ model BestSeller {
   productId Int
   storeId   Int
 
-  product Product @relation(fields: [productId], references: [id])
-  store   Store   @relation(fields: [storeId], references: [id])
+  Drink Drink @relation(fields: [productId], references: [id])
+  Store Store @relation(fields: [storeId], references: [id])
 }
 
-model Product {
-  id     Int     @id @default(autoincrement())
-  name   String
-  size   Size
-  type   Type
-  shopId Int
-  price  Decimal
+model Pricing {
+  productId Int
+  size      Size
+  price     Decimal @db.Decimal(10, 2)
 
-  store      Store        @relation(fields: [shopId], references: [id])
-  bestSeller BestSeller[]
+  Drink Drink @relation(fields: [productId], references: [id])
+
+  @@id([productId, size])
+  @@unique([productId, size])
+}
+
+model Topping {
+  id      Int     @id @default(autoincrement()) // key: id
+  name    String
+  price   Decimal @db.Decimal(10, 2)
+  storeId Int
+
+  Store Store @relation(fields: [storeId], references: [id])
+}
+
+model Info {
+  id      Int      @id @default(autoincrement()) // key: id
+  data    String
+  type    InfoType
+  storeId Int
+
+  Store Store @relation(fields: [storeId], references: [id])
 }
 
 enum Type {
-  TOPPING
+  BROWNSUGARBUBBLE
   TRADITIONAL
   MACHIATO
   ROSE
@@ -70,10 +91,11 @@ enum Size {
   L
 }
 
-enum SocialMediaType {
+enum InfoType {
   FACEBOOK
   INSTAGRAM
   TIKTOK
   TWITTER
   YOUTUBE
+  PHONE
 }

@@ -7,39 +7,60 @@ Table Store {
   name String [not null]
   address String [not null]
   phone String [not null]
-  products Product [not null]
-  socials SocialMedia [not null]
-  bestSellers BestSeller [not null]
+  Drinks Drink [not null]
+  Infors Info [not null]
+  BestSellers BestSeller [not null]
+  Toppings Topping [not null]
 }
 
-Table SocialMedia {
-  url String [pk]
-  type SocialMediaType [not null]
+Table Drink {
+  id Int [pk, increment]
+  name String [not null]
+  type Type [not null]
   storeId Int [not null]
-  store Store [not null]
+  Store Store [not null]
+  BestSellers BestSeller [not null]
+  Pricings Pricing [not null]
 }
 
 Table BestSeller {
   id Int [pk, increment]
   productId Int [not null]
   storeId Int [not null]
-  product Product [not null]
-  store Store [not null]
+  Drink Drink [not null]
+  Store Store [not null]
 }
 
-Table Product {
+Table Pricing {
+  productId Int [not null]
+  size Size [not null]
+  price Decimal [not null]
+  Drink Drink [not null]
+
+  indexes {
+    (productId, size) [pk]
+    (productId, size) [unique]
+  }
+}
+
+Table Topping {
   id Int [pk, increment]
   name String [not null]
-  size Size [not null]
-  type Type [not null]
-  shopId Int [not null]
   price Decimal [not null]
-  store Store [not null]
-  bestSeller BestSeller [not null]
+  storeId Int [not null]
+  Store Store [not null]
+}
+
+Table Info {
+  id Int [pk, increment]
+  data String [not null]
+  type InfoType [not null]
+  storeId Int [not null]
+  Store Store [not null]
 }
 
 Enum Type {
-  TOPPING
+  BROWNSUGARBUBBLE
   TRADITIONAL
   MACHIATO
   ROSE
@@ -51,18 +72,23 @@ Enum Size {
   L
 }
 
-Enum SocialMediaType {
+Enum InfoType {
   FACEBOOK
   INSTAGRAM
   TIKTOK
   TWITTER
   YOUTUBE
+  PHONE
 }
 
-Ref: SocialMedia.storeId > Store.id
+Ref: Drink.storeId > Store.id
 
-Ref: BestSeller.productId > Product.id
+Ref: BestSeller.productId > Drink.id
 
 Ref: BestSeller.storeId > Store.id
 
-Ref: Product.shopId > Store.id
+Ref: Pricing.productId > Drink.id
+
+Ref: Topping.storeId > Store.id
+
+Ref: Info.storeId > Store.id
