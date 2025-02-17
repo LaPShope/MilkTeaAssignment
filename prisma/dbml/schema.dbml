@@ -25,21 +25,24 @@ Table Drink {
 
 Table BestSeller {
   id Int [pk, increment]
-  productId Int [not null]
+  drinkId Int [not null]
   storeId Int [not null]
   Drink Drink [not null]
   Store Store [not null]
+
+  indexes {
+    (drinkId, storeId) [unique]
+  }
 }
 
 Table Pricing {
-  productId Int [not null]
+  drinkId Int [not null]
   size Size [not null]
   price Decimal [not null]
   Drink Drink [not null]
 
   indexes {
-    (productId, size) [pk]
-    (productId, size) [unique]
+    (drinkId, size) [pk]
   }
 }
 
@@ -83,11 +86,11 @@ Enum InfoType {
 
 Ref: Drink.storeId > Store.id
 
-Ref: BestSeller.productId > Drink.id
+Ref: BestSeller.drinkId > Drink.id
 
 Ref: BestSeller.storeId > Store.id
 
-Ref: Pricing.productId > Drink.id
+Ref: Pricing.drinkId > Drink.id
 
 Ref: Topping.storeId > Store.id
 

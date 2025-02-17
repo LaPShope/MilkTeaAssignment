@@ -41,23 +41,24 @@ model Drink {
 }
 
 model BestSeller {
-  id        Int @id @default(autoincrement()) // key: id
-  productId Int
-  storeId   Int
+  id      Int @id @default(autoincrement()) // key: id
+  drinkId Int
+  storeId Int
 
-  Drink Drink @relation(fields: [productId], references: [id])
+  Drink Drink @relation(fields: [drinkId], references: [id])
   Store Store @relation(fields: [storeId], references: [id])
+
+  @@unique([drinkId, storeId])
 }
 
 model Pricing {
-  productId Int
-  size      Size
-  price     Decimal @db.Decimal(10, 2)
+  drinkId Int
+  size    Size
+  price   Decimal @db.Decimal(10, 2)
 
-  Drink Drink @relation(fields: [productId], references: [id])
+  Drink Drink @relation(fields: [drinkId], references: [id])
 
-  @@id([productId, size])
-  @@unique([productId, size])
+  @@id([drinkId, size])
 }
 
 model Topping {
